@@ -1,35 +1,101 @@
-var app= angular.module("App",[]);
-app.controller('ContactController',function($scope){
-    var uid =1;
-    $scope.contacts = [
-        {id:0,'name':'Ngo Anh Tuan','email':'tuananhgo@gmail.com','phone':'111-222-333'}
-    ];
-    $scope.saveContact= function(){
-        if ($scope.newcontact.id==null){
-            $scope.newcontact.id=uid++;
-            $scope.contacts.push($scope.newcontact);
-        }else{
-            for(i in $scope.contacts){
-                if ($scope.contacts[i].id==$scope.newcontact.id){
-                    $scope.contacts[i]=$scope.newcontact;
-                }
-            }
-        }
-        $scope.newcontact={};
-    }
-    $scope.delete=function(id){
-        for(i in $scope.contacts){
-            if($scope.contacts[i].id==id){
-                $scope.contacts.splice(i,1);
-                $scope.newcontact={};
-            }
-        }
-    }
-    $scope.edit=function(id){
-        for(i in $scope.contacts){
-            if($scope.contacts[i].id==id){
-                $scope.newcontact= angular.copy($scope.contacts[i]);
-            }
-        }
-    }
+
+var myApp = angular.module("myApp", []);
+// Register Service
+myApp.service("RegisterService" , function(){
+var uid = 1;
+var users = [{
+'id' : 0,
+'name' : 'Duy',
+'email' : 'DuyAnh@gmail.com',
+'password': '123456789',
+'phone' : '0964603019'}]; 
+ 
+ // Save User
+ this.save = function(user)  
+ {
+ if(user.id == null)                       
+ {
+ user.id = uid++;
+ users.push(user);
+ }
+ else
+ {
+ for(var i in users)
+ {
+ if(users[i].id == user.id)
+ {
+ users[i] = user;
+ }
+ }
+ }
+ };
+ 
+ // Search User
+ this.get = function(id)
+ {
+ for(var i in users )
+ {
+ if( users[i].id == id)
+ {
+ return users[i];
+ }
+ }
+ };
+ 
+ // Delete User
+ this.delete = function(id)
+ {
+ for(var i in users)
+ {
+ if(users[i].id == id)
+ {
+ users.splice(i,1);
+ }
+ }
+ }; 
+ 
+ // List Users
+ this.list = function()
+ {
+ return users;
+ }; 
+});
+ 
+// Register Controller 
+myApp.controller("RegisterController" , function($scope , RegisterService){
+console.clear();
+$scope.ifSearchUser = false;
+$scope.title ="User List";
+$scope.users = RegisterService.list();
+$scope.saveUser = function()
+{
+ console.log($scope.newuser);
+ if($scope.newuser == null || $scope.newuser == angular.undefined)
+ return;
+ RegisterService.save($scope.newuser);
+ $scope.newuser = {};
+}; 
+$scope.delete = function(id)
+{
+ RegisterService.delete(id);
+ if($scope.newuser != angular.undefined && $scope.newuser.id == id)
+ {
+ $scope.newuser = {};
+ }
+}; 
+$scope.edit = function(id)
+{
+ $scope.newuser = angular.copy(RegisterService.get(id));
+}; 
+$scope.searchUser = function(){
+ if($scope.title == "User List"){
+ $scope.ifSearchUser=true;
+ $scope.title = "Back";
+ }
+ else
+ {
+ $scope.ifSearchUser = false;
+ $scope.title = "User List";
+ }   
+};
 });
