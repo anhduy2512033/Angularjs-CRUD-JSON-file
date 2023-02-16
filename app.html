@@ -58,6 +58,7 @@
                     <td>{{ user.phone }}</td>
                     <td ng-if="!ifSearchUser">
                     <a href="#" ng-click="edit(user.id)" role = "button" class = "btn btn-info">edit</a> &nbsp;
+                    <a href="#" ng-click="delete(user.id)" role = "button" class = "btn btn-danger">delete</a>
                     </td>
                 </tr>
             </tbody>
